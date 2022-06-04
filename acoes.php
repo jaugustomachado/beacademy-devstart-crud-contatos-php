@@ -5,6 +5,23 @@ function login(){
 }
 
 function cadastro(){
+    if ($_POST){
+        $nome=$_POST['nome'];
+        $email=$_POST['email'];
+        $telefone=$_POST['telefone'];
+
+        $arquivo=fopen('projeto/dados/contatos.csv','a+');
+
+        fwrite($arquivo, "{$nome};{$email};{$telefone}".PHP_EOL);
+        
+        fclose($arquivo);
+
+        $mensagem="Cadastro Realizado";
+
+        include 'telas/mensagem.php';
+    }
+
+    
     include 'telas/cadastro.php';
 }
 
@@ -25,3 +42,47 @@ function erro404(){
 function relatorio(){
     include 'telas/relatorio.php';
 }
+
+function excluir(){
+    $id=$_GET['id'];
+    $contatos=file('projeto/dados/contatos.csv');
+    unset($contatos[$id]);
+    unlink('projeto/dados/contatos.csv');
+    $arquivo=fopen('projeto/dados/contatos.csv','a+');
+    
+    foreach($contatos as $cadaContato){
+        fwrite($arquivo, $cadaContato);
+    }
+    $mensagem = 'Excluído';
+    include 'telas/mensagem.php';
+}
+
+function editar(){
+    $id=$_GET['id'];
+    $contatos=file('projeto/dados/contatos.csv');
+    
+    if($_POST){
+        $nome=$_POST['nome'];
+        $email=$_POST['email'];
+        $telefone=$_POST['telefone'];
+
+        $contatos[$id]="{$nome};{$email};{$telefone}".PHP_EOL;
+
+        unlink('projeto/dados/contatos.csv');
+        $arquivo=fopen('projeto/dados/contatos.csv','a+');
+    
+        foreach($contatos as $cadaContato){
+            fwrite($arquivo, $cadaContato);
+        }
+
+        fclose($arquivo);
+        $mensagem='contato editado';
+        include 'telas/mensagem.php';
+    }
+
+    $dados = explode(';',$contatos[$id]);
+    
+
+    include 'telas/editar.php';
+}
+

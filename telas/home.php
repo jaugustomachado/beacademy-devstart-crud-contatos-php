@@ -2,6 +2,6 @@
 
 <hr>
 
-<div>
+<div class="alert alert-success">
     Bem vindo à página inicial
 </div>
